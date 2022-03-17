@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="">
+
+    <meta name="author" content="">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap core CSS -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+    <style type="text/css">
+    .left_line{
+        border-left: 3px solid #b9092f;
+        padding-top: 0;
+        vertical-align: top;
+    }
+
+    .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    .separator::after {
+        content: '';
+        flex: 1;
+        border-bottom: 4px solid #000;
+    }
+
+    .separator:not(:empty)::before {
+        margin-right: .25em;
+    }
+
+    .separator:not(:empty)::after {
+        margin-right: .25em;
+    }
+    .top_td{
+        font-size: 50px;
+    }
+    .gray_text{
+        padding-left:5px; font-size:40px; color: gray;
+        line-height: 25px;
+    }
+    .black_text{
+        padding-top: 3px;
+        padding-left:5px;
+        font-size:20px;
+        font-weight:bold;
+        line-height: 20px;
+    }
+    .pad_5{
+        padding-bottom: 5px;
+    }
+
+    </style>
+
+    {% block style %}{% endblock %}
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+
+    <div class="container">
+        <a class="navbar-brand" href="#">КАСУДР</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Карта</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="map_two">Карта AJAX</a>
+                </li>
+              <!--  <li class="nav-item active">
+                    <a class="nav-link" href="odata">oData</a>
+                </li>-->
+            </ul>
+        </div>
+    </div>
+
+</nav>
+
+<!-- Page Content -->
+
+
+{% block content %}{% endblock %}
+
+<footer class="text-center">
+    <!-- Grid container -->
+    <div class="container ">
+        <!-- Copyright -->
+        <div class="text-center p-3">
+            <ul class="list-unstyled">
+                <li>ОЦРВ</li>
+                <li>2022</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Copyright -->
+</footer>
+<script>
+{% block script %}{% endblock %}
+</script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+{% extends 'GeoApp/base.html' %}
+
+{% block title %}
+Карта
+{% endblock %}
+
+
+<!-- Page Content -->
+
+{% block content %}
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-lg-12 text-center">
+
+            <div class="pad_5"></div>
+
+            {{ my_map|safe }}
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <table  class="table">
+        {% if no_coord %}
+        <th>Нет координат для</th>
+            <th>/BIC/AZGO_GEO2</th>
+        {% endif %}
+        {% for line in no_coord %}
+        <tr>
+           <td>{{ line.STANTION }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+
+
+{% endblock %}
+

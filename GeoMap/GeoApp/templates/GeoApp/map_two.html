@@ -1,0 +1,217 @@
+{% extends 'GeoApp/base.html' %}
+
+{% block title %}
+Проследование
+{% endblock %}
+
+{% block style %}
+
+<style type="text/css">
+    .fix_r{
+    top: 15%;
+    right:0;
+    position: fixed;
+    overflow-y:scroll;
+    max-height: 70%;
+
+    }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <main class="col-md-9  col-lg-8 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <section class="h-100 h-custom w-100">
+
+                        <form id="my_form" class="px-md-2" method="POST">
+                            {% csrf_token %}
+                            <div class=" form-outline mb-4">
+                                <lable class="form-label" for="{{ form.month.id_for_label }}">{{ form.month.label }}:
+                                </lable>
+                                {{ form.month }}
+                            </div>
+                            <div class="form-outline mb-4">
+                                <lable class="form-label" for="{{ form.poezd.id_for_label }}">{{ form.poezd.label }}:
+                                </lable>
+                                {{ form.poezd }}
+                            </div>
+                            <button id="subb" type="submit" class="btn btn-success btn-lg mb-1">Отобразить маршрут</button>
+                        </form>
+                </section>
+
+            </div>
+
+            <h2>Проследование</h2>
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col-lg-12 text-center">
+
+                        <div class="pad_5"></div>
+
+                        <div id="mapper" style="width: 100%"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <table id="my_table" class="table">
+                    </table>
+                </div>
+
+            </div>
+        </main>
+        <nav id="sidebarMenu" class="col-md-2 col-lg-4 d-md-block sidebar collapse fix_r">
+            <table class="table">
+                <tr>
+                    <th>Станция начала</th>
+                    <th>Станция конца</th>
+                    <th>&#8470;</th>
+                    <th>Код участка</th>
+                    <th>Четность</th>
+                </tr>
+                <tbody id="numHeader">
+
+                </tbody>
+
+            </table>
+        </nav>
+    </div>
+</div>
+
+<!--<section class="h-100 h-custom">
+    <div class="container py-5 h-100">
+        <form id="my_form" class="px-md-2" method="POST">
+            {% csrf_token %}
+            <div class=" form-outline mb-4">
+                <lable class="form-label" for="{{ form.month.id_for_label }}">{{ form.month.label }}:
+                </lable>
+                {{ form.month }}
+            </div>
+            <div class="form-outline mb-4">
+                <lable class="form-label" for="{{ form.poezd.id_for_label }}">{{ form.poezd.label }}:
+                </lable>
+                {{ form.poezd }}
+            </div>
+            <button id="subb" type="submit" class="btn btn-success btn-lg mb-1">Отобразить маршрут</button>
+        </form>
+
+    </div>
+</section>
+
+<div class="fix_r">
+    <table id="my_table1" class="table">
+        <tr>
+            <th>Станция начала</th>
+            <th>Станция конца</th>
+            <th>Номер</th>
+            <th>Код участка</th>
+            <th>Четность</th>
+        </tr>
+        <tr>
+            <td>qqqqqq</td>
+            <td>qqqqqq</td>
+            <td>qqqqqq</td>
+        </tr>
+    </table>
+</div>-->
+
+<!--<div class="container">
+
+    <div class="row">
+
+        <div class="col-lg-12 text-center">
+
+            <div class="pad_5"></div>
+
+            <div id="mapper" style="width: 100%"></div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <table id="my_table" class="table">
+        </table>
+    </div>
+
+    </div>-->
+
+<script>
+
+ /*   $('#my_form').submit(function() {
+    $.ajax({ data: $(this).serialize(), // получаяем данные
+                   url: "{% url 'map_ajax' %}",
+                   type:"post",
+                   // если успешно, то
+                   success: function (response) {
+                     var block = document.getElementById("mapper");
+                     block = response.ajax_map
+                   },
+                   // если ошибка, то
+                   error: function (response) {
+                       // предупредим об ошибке
+                       console.log(response.responseJSON.errors)
+                   }
+              });
+
+    });*/
+
+    $(function() {
+    $("#my_form").submit(function(event) {
+        // Stop form from submitting normally
+        event.preventDefault();
+        var friendForm = $(this);
+        // Send the data using post
+        var posting = $.post( "{% url 'map_ajax' %}", friendForm.serialize() );
+        // if success:
+        posting.done(function(data) {
+            document.getElementById("mapper").innerHTML = "";
+            var block = document.getElementById("mapper");
+            block.insertAdjacentHTML('afterbegin', data.ajax_map)
+
+            document.getElementById("my_table").innerHTML = "";
+            if (data.no_coord){
+            document.getElementById("my_table").insertAdjacentHTML('afterbegin', '<th>Нет координат для</th> <th>/BIC/AZGO_GEO2</th>');
+            }
+            for (i in data.no_coord){
+            document.getElementById("my_table").insertAdjacentHTML('beforeend', '<tr><td>' + data.no_coord[i].STANTION + '</td></tr>');
+            };
+
+            document.getElementById("numHeader").innerHTML = "";
+            for (i in data.numbering){
+            //document.getElementById("numHeader").insertAdjacentHTML('beforeend', '<tr>');
+            document.getElementById("numHeader").insertAdjacentHTML('beforeend', '<td>' + data.numbering[i].STANTION_START + '</td>' +
+                                                                                 '<td>' + data.numbering[i].STANTION_FINISH + '</td>' +
+                                                                                 '<td>' + data.numbering[i].NUMBER + '</td>' +
+                                                                                 '<td>' + data.numbering[i].CASAR + '</td>' +
+                                                                                 '<td>' + data.numbering[i].CHET + '</td>');
+
+
+            /*document.getElementById("numHeader").insertAdjacentHTML('beforeend', '<td>' + data.numbering[i].STANTION_FINISH + '</td>');
+            document.getElementById("numHeader").insertAdjacentHTML('beforeend', '<td>' + data.numbering[i].NUMBER + '</td>');
+            document.getElementById("numHeader").insertAdjacentHTML('beforeend', '<td>' + data.numbering[i].CASAR + '</td>');
+            document.getElementById("numHeader").insertAdjacentHTML('beforeend', '<td>' + data.numbering[i].CHET + '</td>');*/
+            //document.getElementById("numHeader").insertAdjacentHTML('beforeend', '</tr>');
+            }
+
+
+        });
+        // if failure:
+        posting.fail(function(data) {
+            // 4xx or 5xx response, alert user about failure
+            console.log(data.responseJSON.errors)
+        });
+    });
+});
+
+</script>
+
+{% endblock %}
