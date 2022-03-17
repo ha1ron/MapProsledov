@@ -55,3 +55,4 @@ def map_ajax(request):
                 'numbering': numbering}
     return JsonResponse(response)
 
+
